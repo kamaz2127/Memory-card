@@ -1,0 +1,118 @@
+#создай приложение для запоминания информации
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QApplication, QWidget,
+    QHBoxLayout, QVBoxLayout,
+    QGroupBox, QButtonGroup,
+    QRadioButton, QPushButton,
+    QLabel)
+from random import shuffle
+
+class Question():
+    def __init__(self, question, right_answer, wr1,wr2,wr3):
+        self.question = question
+        self.right_answer = right_answer
+        self.wr1 = wr1
+        self.wr2 = wr2
+        self.wr3 = wr3
+
+q_list = []
+q_list.append(Question('Государственный язык Бразилии', 'Португальский', 'Английский', 'Испанский', 'Бразильский'))
+q_list.append(Question('Какого цвета нет в флаге России?', ' Зеленый', 'Красный', 'Синий', 'Белый'))
+q_list.append(Question('Национальная хижина якутов', 'Ураса', 'Юрта', 'Иглу', 'Хата'))
+
+#окно
+app = QApplication([])
+window = QWidget()
+window.resize(400, 200)
+window.setWindowTitle('Memory Card')
+#Виджеты
+text = QLabel('Вопрос века')
+button = QPushButton('Ответить')
+
+#линии
+v_line1 = QHBoxLayout()
+v_line2 = QHBoxLayout()
+v_line1.addWidget(text, alignment = Qt.AlignCenter)
+v_line2.addWidget(button, alignment = Qt.AlignCenter)
+#v_line.setSpacing(90)
+
+#вопросы
+
+RadioGroupBox = QGroupBox('Варианты ответов')
+
+rb_1 = QRadioButton('Вариант 1')
+rb_2 = QRadioButton('Вариант 2')
+rb_3 = QRadioButton('Вариант 3')
+rb_4 = QRadioButton('Вариант 4')
+
+RadioGroup = QButtonGroup()
+RadioGroup.addButton(rb_1)
+RadioGroup.addButton(rb_2)
+RadioGroup.addButton(rb_3)
+RadioGroup.addButton(rb_4)
+
+layout_ans1 = QHBoxLayout()
+layout_ans2 = QVBoxLayout()
+layout_ans3 = QVBoxLayout()
+
+layout_ans2.addWidget(rb_1)
+layout_ans2.addWidget(rb_2)
+layout_ans3.addWidget(rb_3)
+layout_ans3.addWidget(rb_4)
+
+layout_ans1.addLayout(layout_ans2)
+layout_ans1.addLayout(layout_ans3)
+
+RadioGroupBox.setLayout(layout_ans1)
+layout_card = QVBoxLayout()
+layout_card.addLayout(v_line1)
+layout_card.addWidget(RadioGroupBox)
+#layout_card.addLayout(v_line2)
+
+#RadioGroupBox.hide()
+
+#Панель результата
+
+AnsGroupBox = QGroupBox('Результат теста')
+TF = QLabel('Правильно/Неправильно')
+Res = QLabel('Правильно???')
+
+layout_res = QVBoxLayout()
+layout_res.addWidget(TF, alignment = Qt.AlignCenter)
+layout_res.addWidget(Res, alignment = Qt.AlignCenter)
+AnsGroupBox.setLayout(layout_res)
+layout_card.addWidget(AnsGroupBox)
+AnsGroupBox.hide()
+
+def show_res():
+    RadioGroupBox.hide()
+    AnsGroupBox.show()
+    button.setText('Следующий вопрос')
+
+def show_q():
+    RadioGroupBox.show()
+    AnsGroupBox.hide()
+    button.setText('Ответить')
+    RadioGroup.setExclusive(False)
+    rb_1.setChecked(False)
+    rb_2.setChecked(False)
+    rb_3.setChecked(False)
+    rb_4.setChecked(False)
+    RadioGroup.setExclusive(True)
+
+answers = [rb_1, rb_2, rb_3, rb_4]
+
+def a():
+    if button.text() == 'Ответить':
+        show_res()
+    else:
+        show_q()
+    
+button.clicked.connect(a)
+
+#
+layout_card.addLayout(v_line2)
+window.setLayout(layout_card)
+window.show()
+app.exec()
